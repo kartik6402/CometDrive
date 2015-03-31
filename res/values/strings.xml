@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CometDrive</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+	<string-array name="routes_array">
+	        <item>Activity - Residents</item>
+	        <item>Phase1 - ECS</item>
+	        <item>Phase2 - ECS</item>
+	        <item>Phase3 - ECS</item>
+	        <item>Phase4 - ECS</item>	        
+	</string-array>
+</resources>

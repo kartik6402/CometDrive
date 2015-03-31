@@ -1,0 +1,152 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/activitybackground"
+    android:orientation="vertical"
+    tools:context=".DriverUserInterfaceController" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Riders"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+    
+    <TextView
+        android:id="@+id/txtToday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="35" 
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="60sp"/>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:paddingBottom="20dp">
+	    
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:layout_weight="50">
+	        <TextView
+	        android:id="@+id/textView2"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Current Riders" 
+	        android:gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="30dp"
+	        android:paddingTop="20dp"
+	        android:paddingBottom="20dp"/>
+	        
+	        <TextView
+	        android:id="@+id/txtCurrent"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="7" 
+	        android:gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="70dp"/>
+	        
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal"
+	            android:paddingLeft="10dp"
+	            android:paddingRight="10dp">
+	        	<Button
+		         android:id="@+id/btn1"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:text="+"
+		         android:textSize="50dp"
+		         android:layout_weight="40"
+		         android:background="#000000"
+		         android:textColor="@color/white"/>
+        
+	        	<TextView 
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+        	    android:text=" "
+        	    android:textSize="20dp"/>
+		
+	        	<Button
+		         android:id="@+id/btn2"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"
+		         android:text="-"
+		         android:textSize="50dp"
+		         android:layout_weight="40"
+		         android:background="#000000"
+		         android:textColor="@color/white"/>    
+	        </LinearLayout>
+	    
+	        
+	            
+	    </LinearLayout>
+	    
+	    <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:layout_weight="50">
+		    <TextView
+	        android:id="@+id/text22"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Total Capacity" 
+	        android:gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="30sp"
+	        android:paddingTop="20dp"
+	        android:paddingBottom="20dp"/>
+		    <TextView
+	        android:id="@+id/text44"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="8" 
+	        android:gravity="center"
+	        android:textColor="@color/white"
+	        android:textSize="70sp"/>
+		</LinearLayout>
+    </LinearLayout>
+     
+     
+         
+   
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+	    
+        
+    </LinearLayout>
+     <Switch
+        android:id="@+id/switch1"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shuttle Service"
+        android:textSize="30dp"
+        android:gravity="center"
+        android:switchMinWidth="60dp"
+        android:switchTextAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"/>
+    
+
+</LinearLayout>

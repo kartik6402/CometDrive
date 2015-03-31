@@ -48,6 +48,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
          
         DBMapper db = new DBMapper();  
         db.LoadData(this);
+        db.UpdateLocation("R1", "C1", "3.1N", "45.4S", this);
         new MyTask().execute();   
 	}
 		

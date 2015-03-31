@@ -32,8 +32,13 @@ public class DBMapper extends Activity
 	{
 		DBDataClass Route = new DBDataClass();
         Route.setRouteid("R1");
-        Route.setCabid("C1");	        
-	    mapper.save(Route);
+        Route.setCabid("C1");	
+        Route.setCab_lat("3.4N");
+        Route.setCab_long("45.6S");
+        Route.setCab_total_capacity("8");
+        Route.setCab_curr_capacity("6");
+        Route.setTotal_riders("123");
+        mapper.save(Route);
     }
 	
 	public void UpdateCapacity(String RouteID,String CabID,String Capacity,Context mcontext)

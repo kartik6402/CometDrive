@@ -30,6 +30,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
     protected void onCreate(Bundle savedInstanceState) 
 	{
 		//Code to Fix the Thread Issue
+		//Strict Thread policy
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 

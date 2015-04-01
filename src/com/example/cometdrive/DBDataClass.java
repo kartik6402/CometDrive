@@ -2,19 +2,31 @@ package com.example.cometdrive;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 
-@DynamoDBTable(tableName = "RouteInfo")
+@DynamoDBTable(tableName = "RouteInformation")
 public class DBDataClass 
 {
     private String routeid;
-    private String cabid;
+    private String routeName;
+	private String cabid;
     private String cab_lat;
     private String cab_long;
     private String cab_curr_capacity;
     private String cab_total_capacity;
     private String total_riders;
     
+    @DynamoDBHashKey (attributeName = "RouteID")
+    public String getRouteID() {return routeid;}
+    public void setRouteid(String routeid) {this.routeid = routeid;}
     
-  	@DynamoDBAttribute (attributeName = "Cab_Lat")
+    @DynamoDBAttribute (attributeName = "RouteName")
+    public String getRouteName() {	return routeName; }
+	public void setRouteName(String routeName) { this.routeName = routeName; }
+	
+    @DynamoDBAttribute (attributeName = "CabID")
+    public String getCabID() {return cabid; }
+	public void setCabid(String cabid) {this.cabid = cabid;}
+	
+	@DynamoDBAttribute (attributeName = "Cab_Lat")
 	public String getCab_lat() {return cab_lat;	}
 	public void setCab_lat(String cab_lat) {this.cab_lat = cab_lat;}
 	
@@ -33,14 +45,5 @@ public class DBDataClass
 	@DynamoDBAttribute (attributeName = "Total_Riders")
 	public String getTotal_riders() {return total_riders;}
 	public void setTotal_riders(String total_riders) {	this.total_riders = total_riders;}
-	
-
-	@DynamoDBHashKey (attributeName = "RouteID")
-    public String getRouteID() {return routeid;}
-    public void setRouteid(String routeid) {this.routeid = routeid;}
-	
-	@DynamoDBRangeKey (attributeName = "CabID")
-    public String getCabID() {return cabid; }
-	public void setCabid(String cabid) {this.cabid = cabid;}
 	
  }

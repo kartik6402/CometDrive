@@ -15,6 +15,8 @@ import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -25,7 +27,16 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	AudioManager am;
 	ComponentName cmp;
 	
-	@SuppressWarnings("deprecation")
+	TextView tvRouteName;
+	TextView tvTotalRiders;
+	TextView tvCurrentRiders;
+	TextView tvTotalCapacity;
+	Button btnIncrement;
+	Button btnDecrement;
+	Switch swShuttleService;
+	SharedPreferences pref;
+	
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -36,47 +47,43 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 
 		super.onCreate(savedInstanceState);               
         setContentView(R.layout.driver_user_interface);
-        
-        lm = (LocationManager)getSystemService(LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0,this);
-        this.onLocationChanged(null);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        
-        am = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
-        cmp = new ComponentName(getPackageName(),BluetoothButtonReceiver.class.getName());
-        am.registerMediaButtonEventReceiver(cmp);
-         
-        DBMapper db = new DBMapper();  
-        db.LoadData(this);
-        db.UpdateLocation("R1", "C1", "3.1N", "45.4S", this);
+        Initialize();
+
+        //DBMapper db = new DBMapper();  
+        //db.LoadData(this);
+        //db.UpdateLocation("R1", "C1", "3.1N", "45.4S", this);
         new MyTask().execute();   
 	}
 		
+	@SuppressWarnings("deprecation")
 	@Override
-	protected void onResume() {
+	protected void onResume() 
+	{
 		super.onResume();
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		lm = (LocationManager)getSystemService(LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0,this);        
+		am = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        cmp = new ComponentName(getPackageName(),BluetoothButtonReceiver.class.getName());
+        am.registerMediaButtonEventReceiver(cmp);
+		//Initialize();     
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
-	protected void onPause() {
+	protected void onPause() 
+	{
 		super.onPause();
+		am.unregisterMediaButtonEventReceiver(cmp);
 	}
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {
         int id = item.getItemId();
         if (id == R.id.action_settings) 
         {
@@ -85,8 +92,45 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
         return super.onOptionsItemSelected(item);
     }
 
+	@SuppressWarnings("deprecation")
+	public void Initialize()
+	{
+		//Variables
+		tvRouteName = (TextView) findViewById(R.id.tvRouteName);
+		tvTotalRiders = (TextView) findViewById(R.id.tvTotalRider);
+		tvCurrentRiders = (TextView)findViewById(R.id.tvCurrentRiders);
+		tvTotalCapacity = (TextView)findViewById(R.id.tvTotalCapacity);
+		btnIncrement=(Button)findViewById(R.id.btnIncrement);
+		btnDecrement=(Button)findViewById(R.id.btnDecrement);
+		swShuttleService=(Switch)findViewById(R.id.swShuttleService);
+		pref= getSharedPreferences("COMET", 0);
+		tvRouteName.setText(pref.getString("RouteName", "Route Information not Loaded"));
+		tvTotalCapacity.setText(String.valueOf(pref.getInt("VehicleCapacity", 0)));
+		
+		//Initialize GPS Varaibles
+		lm = (LocationManager)getSystemService(LOCATION_SERVICE);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0,this);
+        this.onLocationChanged(null);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+        //Initialize Media Control variables
+        am = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        cmp = new ComponentName(getPackageName(),BluetoothButtonReceiver.class.getName());
+        am.registerMediaButtonEventReceiver(cmp);
+       
+	}
+	
 	@Override
-	public void onLocationChanged(Location location) {
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		//super.onBackPressed();
+		
+	}
+    //GPS Related Functions
+    
+	@Override
+	public void onLocationChanged(Location location) 
+	{
 		if(location == null)
 		{
 			//txtacc.setText("-.- Kmph");
@@ -108,15 +152,14 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		        startActivity(in);
 			}			
 		}
-		
 	}
-
+	
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void onProviderEnabled(String provider) {
 		// TODO Auto-generated method stub
@@ -129,6 +172,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		
 	}
 	
+	//Asynchronous Task to Update values based on the button Click event.
+	
 	class MyTask extends AsyncTask<Void, Integer, Void>
     {
     	private TextView txtToday;
@@ -136,8 +181,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
-			txtToday = (TextView)findViewById(R.id.txtToday);
-			txtCurrent = (TextView)findViewById(R.id.txtCurrent);
+			txtToday = (TextView)findViewById(R.id.tvTotalRider);
+			txtCurrent = (TextView)findViewById(R.id.tvCurrentRiders);
 		}
     	
 		@Override
@@ -147,8 +192,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 			while(true)
 			{
 				SharedPreferences PREF = getSharedPreferences("COMET", 0);
-				int TodayTotal = PREF.getInt("Today", 0);
-				int Current = PREF.getInt("Current", 0);
+				int TodayTotal = PREF.getInt("TotalRiders", 0);
+				int Current = PREF.getInt("CurrentRiders", 0);
 				publishProgress(TodayTotal,Current);
 				try{
 					Thread.sleep(100);				
@@ -173,7 +218,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 			
 		}
 	}
-   
+	
 }
 
 

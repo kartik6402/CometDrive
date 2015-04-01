@@ -3,12 +3,12 @@ package com.example.cometdrive;
 import android.app.Activity;
 import android.content.Context;
 
-import com.amazonaws.ClientConfiguration;
+//import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-import com.amazonaws.services.dynamodbv2.model.*;
+//import com.amazonaws.services.dynamodbv2.model.*;
 
 public class DBMapper extends Activity
 {

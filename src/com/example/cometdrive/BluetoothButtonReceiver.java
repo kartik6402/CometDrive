@@ -46,24 +46,24 @@ public class BluetoothButtonReceiver extends BroadcastReceiver
 		
 		if(Mode.equalsIgnoreCase("Full"))
 		{
-			int today = pref.getInt("Today", 0);
-        	int current = pref.getInt("Current", 0);
-        	int capacity = pref.getInt("Capacity",8);
+			int today = pref.getInt("TotalRiders", 0);
+        	int current = pref.getInt("CurrentRiders", 0);
+        	int capacity = pref.getInt("VehicleCapacity",8);
         	
         	today = today + (capacity-current);
         	current = capacity;
         	            	
         	Editor edit = pref.edit();
-    		edit.putInt("Today", today);
-    		edit.putInt("Current", current);
+    		edit.putInt("TotalRiders", today);
+    		edit.putInt("CurrentRiders", current);
     		edit.commit();
 			
 		}
 		else if(Mode.equalsIgnoreCase("Increment"))
 		{
-			int today = pref.getInt("Today", 0);
-    		int current = pref.getInt("Current", 0);
-    		int capacity = pref.getInt("Capacity",8);
+			int today = pref.getInt("TotalRiders", 0);
+    		int current = pref.getInt("CurrentRiders", 0);
+    		int capacity = pref.getInt("VehicleCapacity",8);
     		
     		if(current<capacity)
     		{   
@@ -71,18 +71,18 @@ public class BluetoothButtonReceiver extends BroadcastReceiver
     		}
     		today++;
         	Editor edit = pref.edit();
-    		edit.putInt("Today", today);
-    		edit.putInt("Current", current);
+    		edit.putInt("TotalRiders", today);
+    		edit.putInt("CurrentRiders", current);
     		edit.commit();
 		}
 		else if(Mode.equalsIgnoreCase("Decrement"))
 		{
-			int current = pref.getInt("Current", 0);
+			int current = pref.getInt("CurrentRiders", 0);
         	if(current>0)
         	    current--;
         	
         	Editor edit = pref.edit();
-    		edit.putInt("Current", current);
+    		edit.putInt("CurrentRiders", current);
     		edit.commit();
 		}			
 	}

@@ -10,13 +10,13 @@ import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 //import com.amazonaws.services.dynamodbv2.model.*;
 
-public class DBMapper extends Activity
+public class DriverDatabaseController extends Activity
 {
 	CognitoCachingCredentialsProvider credentialsProvider;
 	AmazonDynamoDBClient ddbClient;
 	DynamoDBMapper mapper;
 		
-	public void LoadData(Context mcontext)
+	public DriverDatabaseController(Context mcontext)
 	{
 		credentialsProvider = new CognitoCachingCredentialsProvider(
 		    mcontext, // Context
@@ -26,22 +26,22 @@ public class DBMapper extends Activity
 		
 		ddbClient = new AmazonDynamoDBClient(credentialsProvider);
 		mapper = new DynamoDBMapper(ddbClient);
-		
 	}
-	public void UpdateLocation(String RouteID,String CabID,String Latitude, String Longitude,Context mContext)
+	
+	public void UpdateLiveVehicleInformation(String RouteID,int vehicleID,double Latitude, double Longitude,int TotalCapacity,int CurrentRiders,int TotalRiders)
 	{
-		DBDataClass Route = new DBDataClass();
-        Route.setRouteid("R1");
-        Route.setCabid("C1");	
-        Route.setCab_lat("3.4N");
-        Route.setCab_long("45.6S");
-        Route.setCab_total_capacity("8");
-        Route.setCab_curr_capacity("6");
-        Route.setTotal_riders("123");
+		DBLiveVehicleInformationClass Route = new DBLiveVehicleInformationClass();
+        Route.setRouteID(RouteID);
+        Route.setVehicleID(vehicleID);	
+        Route.setVehicleLat(Latitude);
+        Route.setVehicleLong(Longitude);
+        Route.setVehicleTotalCapacity(TotalCapacity);
+        Route.setCurrentRiders(CurrentRiders);
+        Route.setTotalRiders(TotalRiders);
         mapper.save(Route);
     }
 	
-	public void UpdateCapacity(String RouteID,String CabID,String Capacity,Context mcontext)
+	public void UpdateStatisticsInformation(String RouteID,String CabID,String Capacity,Context mcontext)
 	{
 		
 	}

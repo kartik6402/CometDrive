@@ -3,6 +3,7 @@ package com.example.cometdrive;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,8 +19,11 @@ import android.widget.Toast;
 
 //import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+//import com.amazonaws.auth.policy.Condition;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
+//import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+//import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
 //import com.amazonaws.services.dynamodbv2.model.*;
 
@@ -66,12 +70,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spnRoute.setAdapter(dataAdapter);
 	}
-	
-	public void LoadCabInfo()
-	{
-		
-	}
-	
+
 	@Override
 	public void onClick(View v) 
 	{
@@ -80,13 +79,19 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 			case R.id.btnContinue:
 				String[] routeInformation = spnRoute.getSelectedItem().toString().split("-");
 				String CabCapacity = etCabCapacity.getText().toString().trim();
+				
 				if(!CabCapacity.equals(""))
 				{
 					editor = Pref.edit();
-					editor.putString("RouteId",routeInformation[0]);
+					editor.putString("RouteID",routeInformation[0]);
+				    editor.putString("RouteName",routeInformation[1]);
+				    editor.putInt("TotalRiders",0);
+				    editor.putInt("CurrentRiders",0);
 				    editor.putString("RouteName",routeInformation[1]);
 				    editor.putInt("VehicleCapacity",Integer.parseInt(CabCapacity));
 				    editor.commit();
+				    RetrieveAndUpdateVehicleID(routeInformation[0],Integer.parseInt(CabCapacity),0,0);
+				    
 				    Toast.makeText(this, routeInformation[0]+" "+ etCabCapacity.getText(), Toast.LENGTH_SHORT).show();
 				    Intent DriverUserInterfaceControllerIntent = new Intent(this,DriverUserInterfaceController.class);
 				    startActivity(DriverUserInterfaceControllerIntent);
@@ -101,6 +106,29 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		
 	}
 	
+	public void RetrieveAndUpdateVehicleID(String routeid,int vehiclecapacity, int currentriders,int totalriders)
+	{
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		PaginatedScanList<DBLiveVehicleInformationClass> result = mapper.scan(DBLiveVehicleInformationClass.class, scanExpression);
+		int VehicleID=0;
+		
+		for (DBLiveVehicleInformationClass routeInformation : result) 
+		{
+			if(routeInformation.getRouteID().equals(routeid))
+			{
+				if(routeInformation.getVehicleID()>VehicleID)
+				{
+					VehicleID = routeInformation.getVehicleID();
+				}
+			}
+		}
+		VehicleID++;
+		editor.putInt("VehicleID", VehicleID);
+		editor.commit();
+		
+		DriverDatabaseController db = new DriverDatabaseController(this);  
+        db.UpdateLiveVehicleInformation(routeid, VehicleID, 0.0, 0.0, vehiclecapacity, currentriders, totalriders);
+    }
 	public void Initialize()
 	{
 		//Initialize Variables

@@ -100,15 +100,30 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
     	<Button
-	      android:id="@+id/btnIncrement"
+	      android:id="@+id/btnDecrement"
 	      android:layout_width="wrap_content"
 	      android:layout_height="wrap_content"
-	      android:text="+"
+	      android:text="-"
 	      android:textSize="50dp"
 	      android:layout_weight="40"
 	      android:background="#000000"
 	      android:textColor="@color/white"/>
-   
+   		
+   		<TextView 
+	   	  android:layout_width="wrap_content"
+	   	  android:layout_height="wrap_content"
+	   	  android:text=" "
+	   	  android:textSize="20dp"/>
+
+    	<Button
+	      android:id="@+id/btnFull"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:text="Full"
+	      android:textSize="50dp"
+	      android:layout_weight="40"
+	      android:background="#000000"
+	      android:textColor="@color/white"/>   
     	<TextView 
 	   	  android:layout_width="wrap_content"
 	   	  android:layout_height="wrap_content"
@@ -116,10 +131,10 @@
 	   	  android:textSize="20dp"/>
 
     	<Button
-	      android:id="@+id/btnDecrement"
+	      android:id="@+id/btnIncrement"
 	      android:layout_width="wrap_content"
 	      android:layout_height="wrap_content"
-	      android:text="-"
+	      android:text="+"
 	      android:textSize="50dp"
 	      android:layout_weight="40"
 	      android:background="#000000"
@@ -133,8 +148,9 @@
        android:paddingRight="20dp"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       android:thumb="@drawable/abc_ab_bottom_solid_dark_holo"
        android:text="Shuttle Service"
-       android:textSize="30dp"
+       android:textSize="20dp"
        android:gravity="center"
        android:switchMinWidth="60dp"
        android:switchTextAppearance="?android:attr/textAppearanceMedium"

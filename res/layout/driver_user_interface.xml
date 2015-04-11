@@ -139,22 +139,17 @@
 	      android:layout_weight="40"
 	      android:background="#000000"
 	      android:textColor="@color/white"/>    
-    </LinearLayout> 
-    
+    </LinearLayout>
+
     <Switch
-       android:id="@+id/swShuttleService"
-       android:paddingTop="20dp"
-       android:paddingLeft="20dp"
-       android:paddingRight="20dp"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:thumb="@drawable/abc_ab_bottom_solid_dark_holo"
-       android:text="Shuttle Service"
-       android:textSize="20dp"
-       android:gravity="center"
-       android:switchMinWidth="60dp"
-       android:switchTextAppearance="?android:attr/textAppearanceMedium"
-       android:textColor="@color/white"/>
-    
+        android:id="@+id/swShuttleService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="OnSwitchClick"
+        android:paddingTop="20dp"
+        android:switchTextAppearance="?android:attr/textAppearanceLarge"
+        android:textOff="Service OFF"
+        android:textOn="Service ON"
+        android:thumb="@drawable/abc_ab_bottom_solid_light_holo" />
 
 </LinearLayout>

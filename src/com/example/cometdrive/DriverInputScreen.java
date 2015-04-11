@@ -51,9 +51,19 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		StrictMode.setThreadPolicy(policy);
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.driver_input_screen);
-		
 		Initialize();
 		LoadRouteInfo();
+	}
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
 	public void LoadRouteInfo()
@@ -71,6 +81,17 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		spnRoute.setAdapter(dataAdapter);
 	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if(Pref.getString("Close", "FALSE").equals("TRUE"))
+		{
+			editor.putString("Close", "FALSE");
+			editor.commit();
+			this.finish();
+		}
+	}
 	@Override
 	public void onClick(View v) 
 	{

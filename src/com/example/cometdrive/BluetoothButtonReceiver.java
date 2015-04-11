@@ -49,6 +49,7 @@ public class BluetoothButtonReceiver extends BroadcastReceiver
 			int today = pref.getInt("TotalRiders", 0);
         	int current = pref.getInt("CurrentRiders", 0);
         	int capacity = pref.getInt("VehicleCapacity",8);
+        	int ridersAtStop = capacity;
         	
         	today = today + (capacity-current);
         	current = capacity;
@@ -56,6 +57,7 @@ public class BluetoothButtonReceiver extends BroadcastReceiver
         	Editor edit = pref.edit();
     		edit.putInt("TotalRiders", today);
     		edit.putInt("CurrentRiders", current);
+    		edit.putInt("RidersAtStop", ridersAtStop);
     		edit.commit();
 			
 		}
@@ -64,21 +66,25 @@ public class BluetoothButtonReceiver extends BroadcastReceiver
 			int today = pref.getInt("TotalRiders", 0);
     		int current = pref.getInt("CurrentRiders", 0);
     		int capacity = pref.getInt("VehicleCapacity",8);
+    		int ridersAtStop = pref.getInt("RidersAtStop", 0);
     		
     		if(current<capacity)
     		{   
         	    current++;
     		}
     		today++;
+    		ridersAtStop++;
+    		
         	Editor edit = pref.edit();
     		edit.putInt("TotalRiders", today);
     		edit.putInt("CurrentRiders", current);
+    		edit.putInt("RidersAtStop", ridersAtStop);
     		edit.commit();
 		}
 		else if(Mode.equalsIgnoreCase("Decrement"))
 		{
 			int current = pref.getInt("CurrentRiders", 0);
-        	if(current>0)
+			if(current>0)
         	    current--;
         	
         	Editor edit = pref.edit();

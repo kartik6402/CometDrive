@@ -36,14 +36,32 @@ public class DriverDatabaseController extends Activity
         Route.setVehicleLat(Latitude);
         Route.setVehicleLong(Longitude);
         Route.setVehicleTotalCapacity(TotalCapacity);
-        Route.setCurrentRiders(CurrentRiders);
+        Route.setCurrentRiders(CurrentRiders);        
         Route.setTotalRiders(TotalRiders);
         mapper.save(Route);
     }
 	
-	public void UpdateStatisticsInformation(String RouteID,String CabID,String Capacity,Context mcontext)
+	public void UpdateStatisticsInformation(String RouteID,String TimeStamp,int vehicleID,double Latitude,double Longitude,int RidersAtStop,int CurrentRiders,int TotalRiders,int Capacity)
 	{
-		
+		DBStatisticInformationClass statistic = new DBStatisticInformationClass();
+		statistic.setRouteID(RouteID);
+		statistic.settimestamp(TimeStamp);
+		statistic.setVehicleid(vehicleID);
+		statistic.setLatitude(Latitude);
+		statistic.setLongitude(Longitude);
+		statistic.setRidersatstop(RidersAtStop);
+		statistic.setCurrentriders(CurrentRiders);
+		statistic.setTotalriders(TotalRiders);
+		statistic.setCapacity(Capacity);
+		mapper.save(statistic);
+	}
+	
+	public void DeleteLiveVehicleInformation(String RouteID,int VehicleID)
+	{
+		DBLiveVehicleInformationClass Route = new DBLiveVehicleInformationClass();
+		Route.setRouteID(RouteID);
+		Route.setVehicleID(VehicleID);
+		mapper.delete(Route);
 	}
 }
 

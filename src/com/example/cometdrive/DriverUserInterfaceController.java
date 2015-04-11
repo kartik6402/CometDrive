@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class DriverUserInterfaceController extends ActionBarActivity implements LocationListener,android.view.View.OnClickListener
@@ -44,31 +45,21 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	DriverDatabaseController dbcontroller;
 	int updatecounter=0;
 	Location location;
+	UpdateDatabaseTask asyncTask;
 	
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) 
 	{
-		//Code to Fix the Thread Issue
-		//Strict Thread policy
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
-
 		super.onCreate(savedInstanceState);               
         setContentView(R.layout.driver_user_interface);
-        Initialize();
-
-        //new UpdateGPSLocationTask().execute();
-           
+        Initialize();  
 	}
 		
 	@Override
 	protected void onResume() 
 	{
 		super.onResume();
-		//am = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
-        //cmp = new ComponentName(getPackageName(),BluetoothButtonReceiver.class.getName());
-        //am.registerMediaButtonEventReceiver(cmp);
 		Initialize();     
 	}
 	
@@ -77,6 +68,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	protected void onPause() 
 	{
 		super.onPause();
+		asyncTask.cancel(true);
+		lm.removeUpdates(this);
 		am.unregisterMediaButtonEventReceiver(cmp);
 	}
 
@@ -104,12 +97,17 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
     	int today;
 		int current;
 		int capacity;
+		int ridersAtStop;
+		
     	switch (v.getId()) 
     	{
 			case R.id.btnIncrement:
 				today = pref.getInt("TotalRiders", 0);
 	    		current = pref.getInt("CurrentRiders", 0);
 	    		capacity = pref.getInt("VehicleCapacity",8);
+	    		ridersAtStop = pref.getInt("RidersAtStop",0);
+	    		ridersAtStop++;
+	        	
 	    		if(current<capacity)
 	    		{   
 	        	    current++;
@@ -117,6 +115,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	    		today++;
 	        	editor.putInt("TotalRiders", today);
 	    		editor.putInt("CurrentRiders", current);
+	    		editor.putInt("RidersAtStop", ridersAtStop);
 	    		editor.commit();
 	    		break;
 			case R.id.btnDecrement:
@@ -132,8 +131,10 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	        	capacity = pref.getInt("VehicleCapacity",8);
 	        	today = today + (capacity-current);
 	        	current = capacity;
+	        	ridersAtStop = capacity;
 	        	editor.putInt("TotalRiders", today);
 	    		editor.putInt("CurrentRiders", current);
+	    		editor.putInt("RidersAtStop", ridersAtStop);
 	    		editor.commit();
 				break;
 
@@ -146,6 +147,10 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	@SuppressWarnings("deprecation")
 	public void Initialize()
 	{
+
+	    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+
 		//Variables
 		tvRouteName  	= (TextView) findViewById(R.id.tvRouteName);
 		tvTotalRiders  	= (TextView) findViewById(R.id.tvTotalRider);
@@ -158,6 +163,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		pref			= getSharedPreferences("COMET", 0);
 		editor 			= pref.edit();
 		dbcontroller = new DriverDatabaseController(this);
+		swShuttleService.setChecked(true);
 		
 		tvRouteName.setText(pref.getString("RouteName", "Route Information not Loaded"));
 		tvTotalCapacity.setText(String.valueOf(pref.getInt("VehicleCapacity", 0)));
@@ -168,7 +174,6 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
         location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     	
         this.onLocationChanged(null);
-        
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
         //Initialize Media Control variables
@@ -180,7 +185,10 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
         btnIncrement.setOnClickListener(this);
         btnDecrement.setOnClickListener(this);
         btnFull.setOnClickListener(this);
-        new MyTask().execute();
+        editor.putString("Close", "FALSE");
+        editor.commit();
+        asyncTask = new UpdateDatabaseTask();
+        asyncTask.execute();
 	}
 	
 	@Override
@@ -189,6 +197,26 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		//super.onBackPressed();
 		
 	}
+	
+	@SuppressWarnings("deprecation")
+	public void OnSwitchClick(View view)
+	{
+		boolean on = ((Switch) view).isChecked();
+	    
+	    if (!on) 
+	    {
+	    	editor.putString("Close", "TRUE");
+	    	editor.commit();
+	    	asyncTask.cancel(true);
+	    	lm.removeUpdates(this);	
+	    	am.unregisterMediaButtonEventReceiver(cmp);
+	    	dbcontroller.DeleteLiveVehicleInformation(pref.getString("RouteID", "0"), pref.getInt("VehicleID", 0));
+	    	this.finish();
+	    
+	    	Toast.makeText(this, "You are Logged Out, Thank you for Using CometRide",  Toast.LENGTH_SHORT).show();
+	    }
+	}
+	
     //GPS Related Functions
     
 	@Override
@@ -204,10 +232,14 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 			float cSpeed_mps = location.getSpeed();
 			vehicleLatitude = location.getLatitude();
 			vehicleLongitude = location.getLongitude();
-			TextView tv = (TextView) findViewById(R.id.tvCurrentRidersLabel);
-			TextView tv1 = (TextView) findViewById(R.id.tvTotalCapacityLabel);
-			tv.setText(String.valueOf(vehicleLatitude));
-			tv1.setText(String.valueOf(vehicleLongitude));
+			editor.putString("Latitude", String.valueOf(vehicleLatitude));
+			editor.putString("Longitude", String.valueOf(vehicleLongitude));
+			editor.commit();
+			
+			//TextView tv = (TextView) findViewById(R.id.tvCurrentRidersLabel);
+			//TextView tv1 = (TextView) findViewById(R.id.tvTotalCapacityLabel);
+			//tv.setText(String.valueOf(vehicleLatitude));
+			//tv1.setText(String.valueOf(vehicleLongitude));
 			
 			float cSpeed_mph = (float) (cSpeed_mps* 3600/(1000)); //1609.344 for miles
 			
@@ -231,25 +263,20 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	}
 	
 	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onProviderEnabled(String provider) {}
 
 	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void onProviderDisabled(String provider) {}
 	
 	//Asynchronous Task to Update values based on the button Click event.
-	
-	class MyTask extends AsyncTask<Void, Integer, Void>
+	class UpdateDatabaseTask extends AsyncTask<Void, Integer, Void>
     {
     	private TextView txtToday;
     	private TextView txtCurrent;
+    	
 		@Override
-		protected void onPreExecute() {
+		protected void onPreExecute() 
+		{
 			// TODO Auto-generated method stub
 			txtToday = (TextView)findViewById(R.id.tvTotalRider);
 			txtCurrent = (TextView)findViewById(R.id.tvCurrentRiders);
@@ -299,29 +326,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 			
 		}
 	}
+	
 
-	class UpdateGPSLocationTask extends AsyncTask<Void, Void, Void>
-    {
-    	@Override
-		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			
-			while(true)
-			{
-				publishProgress();
-				try{
-					//Log.i("Async Task",Running);
-					dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteId", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
-					Thread.sleep(10000);				
-				}
-				catch(InterruptedException e)
-				{ 
-					e.printStackTrace();
-				}
-			}
-			//return null;
-		}
-	}
 }
 
 

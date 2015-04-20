@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class DisplayBlank extends Activity implements LocationListener
@@ -90,14 +91,14 @@ public class DisplayBlank extends Activity implements LocationListener
 		if(location != null)
 		{
 			float cSpeed_mps = location.getSpeed();
-			float cSpeed_kmph = (float) (cSpeed_mps* 3600/(1000)); //1609.344 for miles
+			//float cSpeed_kmph = (float) (cSpeed_mps* 3600/(1000)); //1609.344 for miles
 			vehicleLatitude = location.getLatitude();
 			vehicleLongitude =location.getLongitude();
-			
+			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 			
 			Toast.makeText(this, String.valueOf(vehicleLatitude), Toast.LENGTH_SHORT).show();
 			
-			if(cSpeed_kmph==0)
+			if(cSpeed_mps<=0.00028)
 			{
 				lm.removeUpdates(this);
 				this.finish();
@@ -134,7 +135,7 @@ public class DisplayBlank extends Activity implements LocationListener
 				
 				try
 				{
-					if(updatecounter == 100)
+					if(updatecounter == 50)
 					{						
 						dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 						updatecounter=0;
@@ -164,5 +165,7 @@ public class DisplayBlank extends Activity implements LocationListener
 			
 		}
 	}
+	
+	
 		
 }

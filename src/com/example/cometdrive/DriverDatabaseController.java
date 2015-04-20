@@ -1,5 +1,9 @@
 package com.example.cometdrive;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 
@@ -62,6 +66,19 @@ public class DriverDatabaseController extends Activity
 		Route.setRouteID(RouteID);
 		Route.setVehicleID(VehicleID);
 		mapper.delete(Route);
+	}
+	
+	public List<String> LoadRouteInfo()
+	{
+		List<String> dbrouteInfo = new ArrayList<String>();
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		PaginatedScanList<DBRouteInformationClass> result = mapper.scan(DBRouteInformationClass.class, scanExpression);
+		for (DBRouteInformationClass routeInformation : result) 
+		{
+			dbrouteInfo.add(routeInformation.getRouteid()+"-"+routeInformation.getRouteName());
+		}
+		Collections.sort(dbrouteInfo);
+		return dbrouteInfo;
 	}
 }
 

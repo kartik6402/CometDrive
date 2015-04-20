@@ -1,7 +1,6 @@
 package com.example.cometdrive;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
@@ -41,6 +40,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	CognitoCachingCredentialsProvider credentialsProvider;
 	AmazonDynamoDBClient ddbClient;
 	DynamoDBMapper mapper;
+	DriverDatabaseController dbcontroller;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -68,21 +68,16 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	
 	public void LoadRouteInfo()
 	{	
-		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
-		PaginatedScanList<DBRouteInformationClass> result = mapper.scan(DBRouteInformationClass.class, scanExpression);
-		dropdownRouteList = new ArrayList<String>();		
-		for (DBRouteInformationClass routeInformation : result) 
-		{
-			dropdownRouteList.add(routeInformation.getRouteid()+"-"+routeInformation.getRouteName());
-		}
-		Collections.sort(dropdownRouteList);
+		dropdownRouteList = new ArrayList<String>();
+		dropdownRouteList = dbcontroller.LoadRouteInfo();
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, dropdownRouteList);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spnRoute.setAdapter(dataAdapter);
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onResume() 
+	{
 		// TODO Auto-generated method stub
 		super.onResume();
 		if(Pref.getString("Close", "FALSE").equals("TRUE"))
@@ -159,6 +154,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	    btnContinue =(Button)findViewById(R.id.btnContinue);
 	    btnContinue.setOnClickListener(this);
 	    
+	    dbcontroller = new DriverDatabaseController(this);
 		//Initialize Database Connection
 		credentialsProvider = new CognitoCachingCredentialsProvider(
 			    this, // Context

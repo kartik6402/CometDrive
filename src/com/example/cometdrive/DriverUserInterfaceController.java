@@ -68,8 +68,8 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	protected void onPause() 
 	{
 		super.onPause();
-		asyncTask.cancel(true);
-		lm.removeUpdates(this);
+		//asyncTask.cancel(true);
+		//lm.removeUpdates(this);
 		am.unregisterMediaButtonEventReceiver(cmp);
 	}
 
@@ -241,9 +241,9 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 			//tv.setText(String.valueOf(vehicleLatitude));
 			//tv1.setText(String.valueOf(vehicleLongitude));
 			
-			float cSpeed_mph = (float) (cSpeed_mps* 3600/(1000)); //1609.344 for miles
+			//float cSpeed_mph = (float) (cSpeed_mps* 3600/(1000)); //1609.344 for miles
 			
-			if(cSpeed_mph==0.0)
+			if(cSpeed_mps>=0.00028)
 			{
 				//txtacc.setText(cSpeed_mph+" Kmph\n Latitude "+location.getLatitude()+"\nLongitude "+location.getLongitude());				
 			}
@@ -296,7 +296,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 				
 				try
 				{
-					if(updatecounter == 100)
+					if(updatecounter == 50)
 					{						
 						dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 						updatecounter=0;

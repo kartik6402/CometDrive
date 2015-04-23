@@ -6,13 +6,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-
-//import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
-//import com.amazonaws.services.dynamodbv2.model.*;
+
 
 public class DriverDatabaseController extends Activity
 {
@@ -75,10 +73,63 @@ public class DriverDatabaseController extends Activity
 		PaginatedScanList<DBRouteInformationClass> result = mapper.scan(DBRouteInformationClass.class, scanExpression);
 		for (DBRouteInformationClass routeInformation : result) 
 		{
-			dbrouteInfo.add(routeInformation.getRouteid()+"-"+routeInformation.getRouteName());
+			if(!dbrouteInfo.contains(routeInformation.getRouteid()))
+			{
+				dbrouteInfo.add(routeInformation.getRouteid());
+			}
 		}
 		Collections.sort(dbrouteInfo);
 		return dbrouteInfo;
+	}
+	
+	public int RetrieveAndUpdateVehicleID(String routeid,int vehiclecapacity, int currentriders,int totalriders)
+	{
+		DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+		PaginatedScanList<DBLiveVehicleInformationClass> result = mapper.scan(DBLiveVehicleInformationClass.class, scanExpression);
+		int VehicleID=0;
+		
+		for (DBLiveVehicleInformationClass routeInformation : result) 
+		{
+			if(routeInformation.getRouteID().equals(routeid))
+			{
+				if(routeInformation.getVehicleID()>VehicleID)
+				{
+					VehicleID = routeInformation.getVehicleID();
+				}
+			}
+		}
+		VehicleID++;
+		//UpdateLiveVehicleInformation(routeid, VehicleID, 0.0, 0.0, vehiclecapacity, currentriders, totalriders);
+        return VehicleID;
+    }
+
+	@SuppressWarnings("unchecked")
+	public boolean FindDriver(String DriverID) 
+	{
+		DBDriverInfoClass driver= new DBDriverInfoClass();
+		driver.setDriverid(DriverID);
+		@SuppressWarnings("rawtypes")
+		DynamoDBQueryExpression queryExpression = new DynamoDBQueryExpression()
+        	.withHashKeyValues(driver)
+        	.withConsistentRead(false);
+
+		PaginatedQueryList<DBDriverInfoClass> result = mapper.query(DBDriverInfoClass.class, queryExpression);
+		if(result.size()>0) 
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public void UpdateShiftInformation(String routeID, String driverID,String startTime, String endTime, int totalRiders) 
+	{
+		DBShiftInformationClass Shift = new DBShiftInformationClass();
+		Shift.setRouteid(routeID);
+		Shift.setStarttime(startTime);	
+		Shift.setEndtime(endTime);
+		Shift.setDriverid(driverID);
+		Shift.setTotalriders(totalRiders);
+        mapper.save(Shift);
 	}
 }
 

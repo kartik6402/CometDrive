@@ -9,6 +9,30 @@
     android:paddingRight="20dp">
     
     <TextView
+        android:id="@+id/tvCabCapacityLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter DriverID"
+        android:gravity="start"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/etDriverId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Driver id provided by department"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B7B1A9">
+        
+        <requestFocus />
+    </EditText>
+    
+    
+    <TextView
         android:id="@+id/tvSelectRoute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,9 +65,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number" >
+        android:inputType="number" 
+        android:hint="Total riders the cab can hold"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B7B1A9">
 
-        <requestFocus />
     </EditText>
     
     <TextView
@@ -64,6 +90,16 @@
         android:paddingRight="20sp"
         android:background="@color/orange"
         android:textColor="@color/white"
-        android:text="Continue"/>
+        android:text="Continue >>"/>
+    
+    <TextView
+        android:id="@+id/tvCabCapacityLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please Make Sure the Bluetooth button is connected before pressing continue.. !!"
+        android:gravity="start"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:paddingTop="20dp"/>
          
  </LinearLayout>

@@ -126,7 +126,7 @@ public class DisplayBlank extends Activity implements LocationListener
 		
 		if(locationUpdateCounter == 5)
 		{
-			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
+			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude,vehicleLongitude,vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 			Log.i("Comet","Live Vehicle Information Table Updated from Blank Screen");
 			locationUpdateCounter=0;
 		}

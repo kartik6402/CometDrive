@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.*;
@@ -30,11 +31,13 @@ public class DriverDatabaseController extends Activity
 		mapper = new DynamoDBMapper(ddbClient);
 	}
 	
-	public void UpdateLiveVehicleInformation(String RouteID,int vehicleID,double Latitude, double Longitude,int TotalCapacity,int CurrentRiders,int TotalRiders)
+	public void UpdateLiveVehicleInformation(String RouteID,int vehicleID,double prevLat,double prevLong,double Latitude, double Longitude,int TotalCapacity,int CurrentRiders,int TotalRiders)
 	{
 		DBLiveVehicleInformationClass Route = new DBLiveVehicleInformationClass();
         Route.setRouteID(RouteID);
         Route.setVehicleID(vehicleID);	
+        Route.setPrevLat(prevLat);
+        Route.setPrevLong(prevLong);
         Route.setVehicleLat(Latitude);
         Route.setVehicleLong(Longitude);
         Route.setVehicleTotalCapacity(TotalCapacity);
@@ -104,21 +107,29 @@ public class DriverDatabaseController extends Activity
     }
 
 	@SuppressWarnings("unchecked")
-	public boolean FindDriver(String DriverID) 
+	public String FindDriver(String DriverID,java.sql.Timestamp currentTime) 
 	{
-		DBDriverInfoClass driver= new DBDriverInfoClass();
+		DBScheduleInformationClass driver= new DBScheduleInformationClass();
 		driver.setDriverid(DriverID);
 		@SuppressWarnings("rawtypes")
 		DynamoDBQueryExpression queryExpression = new DynamoDBQueryExpression()
         	.withHashKeyValues(driver)
         	.withConsistentRead(false);
 
-		PaginatedQueryList<DBDriverInfoClass> result = mapper.query(DBDriverInfoClass.class, queryExpression);
-		if(result.size()>0) 
+		PaginatedQueryList<DBScheduleInformationClass> result = mapper.query(DBScheduleInformationClass.class, queryExpression);
+		
+		for (DBScheduleInformationClass dbScheduleInformationClass : result) 
 		{
-			return true;
+			java.sql.Timestamp startTimeStamp = java.sql.Timestamp.valueOf(dbScheduleInformationClass.getStarttime());
+			java.sql.Timestamp endTimeStamp = java.sql.Timestamp.valueOf(dbScheduleInformationClass.getEndtime());
+			
+			startTimeStamp = new java.sql.Timestamp(startTimeStamp.getTime()-(16*60*1000));
+			if(currentTime.after(startTimeStamp) && currentTime .before(endTimeStamp))
+			{
+				return dbScheduleInformationClass.getRouteid();
+			}
 		}
-		return false;
+		return "";
 	}
 
 	public void UpdateShiftInformation(String routeID, String driverID,String startTime, String endTime, int totalRiders) 

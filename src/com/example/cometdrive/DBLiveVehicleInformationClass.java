@@ -12,6 +12,8 @@ public class DBLiveVehicleInformationClass
     private int currentriders;
     private int vehicletotalcapacity;
     private int totalriders;
+    private double prevLat;
+    private double prevLong;
     
     @DynamoDBHashKey (attributeName = "RouteID")
     public String getRouteID() {return routeid;}
@@ -41,4 +43,11 @@ public class DBLiveVehicleInformationClass
 	public int getTotalRiders() {return totalriders;}
 	public void setTotalRiders(int totalriders) {this.totalriders = totalriders;}
 	
+	@DynamoDBAttribute (attributeName = "PrevLat")
+	public double getPrevLat() {return prevLat;}
+	public void setPrevLat(double prevLat) {this.prevLat = prevLat;}
+	
+	@DynamoDBAttribute (attributeName = "PrevLong")
+	public double getPrevLong() {return prevLong;}
+	public void setPrevLong(double prevLong) {this.prevLong = prevLong;}
  }

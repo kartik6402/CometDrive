@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -26,7 +27,10 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	Spinner spnRoute;
 	EditText etCabCapacity;
 	EditText etDriverID;
+	TextView tvAssignedRoute;
+	TextView tvCabCapacity;
 	Button btnContinue;
+	Button btnCancel;
 	List<String> dropdownRouteList;
 	SharedPreferences Pref;
 	Editor editor;
@@ -46,7 +50,8 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	protected void onResume(){	
 		super.onResume();
 		Initialize();
-		LoadRouteInfo();
+		
+	    //LoadRouteInfo();
 		if(Pref.getString("Close", "FALSE").equals("TRUE"))
 		{
 			editor.putString("Close", "FALSE");
@@ -82,11 +87,21 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		//Initialize Variables
 		Pref = getSharedPreferences("COMET", 0);
 		editor = Pref.edit();
-		etCabCapacity= (EditText) findViewById(R.id.etCabCapacity);
 		etDriverID =(EditText)findViewById(R.id.etDriverId);
-		spnRoute = (Spinner) findViewById(R.id.spnSelectRoute);
-	    btnContinue =(Button)findViewById(R.id.btnContinue);
-	    btnContinue.setOnClickListener(this);
+		tvAssignedRoute = (TextView)findViewById(R.id.tvAssignedRoute);
+		tvCabCapacity =(TextView)findViewById(R.id.tvCabCapacityLabel);
+		etCabCapacity= (EditText)findViewById(R.id.etCabCapacity);
+		btnContinue =(Button)findViewById(R.id.btnContinue);
+	    btnContinue.setText("Login >>");
+	    btnCancel =(Button)findViewById(R.id.btnCancel);
+	    btnCancel.setOnClickListener(this);
+	    
+		btnContinue.setOnClickListener(this);
+		
+		tvAssignedRoute.setVisibility(View.GONE);
+		tvCabCapacity.setVisibility(View.GONE);
+		etCabCapacity.setVisibility(View.GONE);
+		
 	    dbController = new DriverDatabaseController(this);
 	}
 	
@@ -106,16 +121,14 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		switch (v.getId()) 
 		{
 			case R.id.btnContinue:
-				routeInformation = spnRoute.getSelectedItem().toString();
-				CabCapacity = etCabCapacity.getText().toString().trim();
 				String driverID = etDriverID.getText().toString();
-				if(!CabCapacity.equals("") && (!driverID.equals("")))
+				if(btnContinue.getText().equals("Report On Duty >>"))
 				{
-					if(dbController.FindDriver(driverID))
+					CabCapacity = etCabCapacity.getText().toString().trim();
+					if(!CabCapacity.equals(""))
 					{
 						java.util.Date date= new java.util.Date();
 						String timeStamp = new Timestamp(date.getTime())+"";
-						
 						editor = Pref.edit();
 						editor.putString("DriverID", driverID);
 						editor.putString("StartTime", timeStamp);
@@ -128,10 +141,39 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 					    new LoadingTask().execute();
 					}
 					else
-						Toast.makeText(this, "Please enter a Valid Driver ID", Toast.LENGTH_SHORT).show();
+					{
+						Toast.makeText(this, "Please enter a Valid Cab Capacity", Toast.LENGTH_SHORT).show();
+					}
 				}
-				else
-					Toast.makeText(this, "Please enter DriverID and Capacity to Proceed ", Toast.LENGTH_SHORT).show();
+				else if(btnContinue.getText().equals("Login >>"))
+				{
+					if(!driverID.equals(""))
+					{
+						java.util.Date date= new java.util.Date();
+						Timestamp timeStamp = new Timestamp(date.getTime());
+						routeInformation = dbController.FindDriver(driverID,timeStamp);
+						if(!routeInformation.equals(""))
+						{
+
+							tvAssignedRoute.setVisibility(View.VISIBLE);
+							tvCabCapacity.setVisibility(View.VISIBLE);
+							etCabCapacity.setVisibility(View.VISIBLE);
+							etDriverID.setEnabled(false);
+							btnContinue.setText("Report On Duty >>");
+							tvAssignedRoute.setText("Assigned Route :"+routeInformation);
+							Toast.makeText(this, "Login Successful !!", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							Toast.makeText(this, "Please enter a Valid Driver ID", Toast.LENGTH_SHORT).show();
+						}
+					}
+					else
+						Toast.makeText(this, "Pleas enter a valid Driver ID ", Toast.LENGTH_SHORT).show();
+				}
+			break;
+			case R.id.btnCancel:
+				this.finish();
 			break;
 
 		default:
@@ -148,7 +190,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	    @Override
 	    protected void onPreExecute()
 	    {
-	        Dialog.setMessage("Loading CometDrive...");
+	        Dialog.setMessage("Have a Safe Drive !!");
 	        Dialog.show();
 	    }
 

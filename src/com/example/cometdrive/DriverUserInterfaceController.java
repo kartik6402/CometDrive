@@ -22,12 +22,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class DriverUserInterfaceController extends ActionBarActivity implements LocationListener,android.view.View.OnClickListener
+public class DriverUserInterfaceController extends ActionBarActivity implements LocationListener,android.view.View.OnClickListener,OnCheckedChangeListener
 {
 	LocationManager lm;
 	TextView txtacc;
@@ -116,6 +118,7 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		editor 			= pref.edit();
 		dbcontroller = new DriverDatabaseController(this);
 		swShuttleService.setChecked(true);
+		swShuttleService.setOnCheckedChangeListener(this);
 		
 		tvRouteName.setText(pref.getString("RouteID", "Route Information not Loaded"));
 		tvTotalCapacity.setText(String.valueOf(pref.getInt("VehicleCapacity", 0)));
@@ -220,33 +223,12 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		Toast.makeText(this,"Please Turn off the service to Exit", Toast.LENGTH_SHORT).show();
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void OnSwitchClick(View view)
-	{
-		boolean on = ((Switch) view).isChecked();
-	    if (!on) 
-	    {
-	    	dbcontroller.DeleteLiveVehicleInformation(pref.getString("RouteID", "0"), pref.getInt("VehicleID", 0));
-	    	java.util.Date date= new java.util.Date();
-			String endTime = new Timestamp(date.getTime())+"";
-	        dbcontroller.UpdateShiftInformation(pref.getString("RouteID", "Route"),pref.getString("DriverID", "Driver"),pref.getString("StartTime", "01/01/2015 12:00:00"),endTime,pref.getInt("TotalRiders", 0));
-	    	editor.putString("Close", "TRUE");
-	    	editor.commit();
-	    	asyncTask.cancel(true);
-	    	lm.removeUpdates(this);	
-	    	am.unregisterMediaButtonEventReceiver(cmp);
-	    	new LoadingTask().execute();
-	    	this.finish();
-	    	Toast.makeText(DriverUserInterfaceController.this, "You are Logged Out, Thank you for Using CometDrive",  Toast.LENGTH_SHORT).show();
-	    }
-	}
-	
+	private Location prevLoc;
     //################################## Location Listener Events #####################################//
 	@Override
 	public void onLocationChanged(Location location) 
 	{
 		Log.i("Comet","Locaiton Changed");
-		
 		
 		if(location != null)
 		{
@@ -269,10 +251,15 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		}
 		if(locationUpdateCounter==5)
 		{
-			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
+			if(prevLoc==null)
+				prevLoc = location;
+			
+			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),prevLoc.getLatitude(),prevLoc.getLongitude(),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 			Log.i("Comet","Live Information Table Updated from MainScreen");
 			locationUpdateCounter=0;
+			prevLoc = location;
 		}
+		
 	}
 	
 	@Override
@@ -356,6 +343,30 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 	    }
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
+	{
+		if (!isChecked) 
+	    {
+			dbcontroller.DeleteLiveVehicleInformation(pref.getString("RouteID", "0"), pref.getInt("VehicleID", 0));
+	    	java.util.Date date= new java.util.Date();
+			String endTime = new Timestamp(date.getTime())+"";
+	        dbcontroller.UpdateShiftInformation(pref.getString("RouteID", "Route"),pref.getString("DriverID", "Driver"),pref.getString("StartTime", "01/01/2015 12:00:00"),endTime,pref.getInt("TotalRiders", 0));
+	    	editor.putString("Close", "TRUE");
+	    	editor.commit();
+	    	asyncTask.cancel(true);
+	    	lm.removeUpdates(DriverUserInterfaceController.this);	
+	    	am.unregisterMediaButtonEventReceiver(cmp);
+	    	//new LoadingTask().execute();
+	    	Toast.makeText(DriverUserInterfaceController.this, "You are Logged Out, Thank you for Using CometDrive",  Toast.LENGTH_SHORT).show();
+	    	new LoadingTask().execute();
+	    	this.finish();
+	    	
+	    }
+	}
+
+	
 }
 
 

@@ -152,7 +152,11 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 						java.util.Date date= new java.util.Date();
 						Timestamp timeStamp = new Timestamp(date.getTime());
 						routeInformation = dbController.FindDriver(driverID,timeStamp);
-						if(!routeInformation.equals(""))
+						if(routeInformation.equals("No ID"))
+						{
+							Toast.makeText(this, "Please enter a Valid Driver ID", Toast.LENGTH_SHORT).show();
+						}
+						else if(!routeInformation.equals(""))
 						{
 
 							tvAssignedRoute.setVisibility(View.VISIBLE);
@@ -165,7 +169,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 						}
 						else
 						{
-							Toast.makeText(this, "Please enter a Valid Driver ID", Toast.LENGTH_SHORT).show();
+							Toast.makeText(this, "Your are not Scheduled for this Time", Toast.LENGTH_SHORT).show();
 						}
 					}
 					else

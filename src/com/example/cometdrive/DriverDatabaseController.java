@@ -110,6 +110,8 @@ public class DriverDatabaseController extends Activity
 	public String FindDriver(String DriverID,java.sql.Timestamp currentTime) 
 	{
 		DBScheduleInformationClass driver= new DBScheduleInformationClass();
+		String returnVal = "";
+		boolean validIDFlg= false;
 		driver.setDriverid(DriverID);
 		@SuppressWarnings("rawtypes")
 		DynamoDBQueryExpression queryExpression = new DynamoDBQueryExpression()
@@ -122,14 +124,17 @@ public class DriverDatabaseController extends Activity
 		{
 			java.sql.Timestamp startTimeStamp = java.sql.Timestamp.valueOf(dbScheduleInformationClass.getStarttime());
 			java.sql.Timestamp endTimeStamp = java.sql.Timestamp.valueOf(dbScheduleInformationClass.getEndtime());
-			
+			validIDFlg =true;
 			startTimeStamp = new java.sql.Timestamp(startTimeStamp.getTime()-(16*60*1000));
 			if(currentTime.after(startTimeStamp) && currentTime .before(endTimeStamp))
 			{
 				return dbScheduleInformationClass.getRouteid();
 			}
 		}
-		return "";
+		if(!validIDFlg)
+			returnVal="No ID";
+		
+		return returnVal;
 	}
 
 	public void UpdateShiftInformation(String routeID, String driverID,String startTime, String endTime, int totalRiders) 

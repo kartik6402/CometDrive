@@ -61,7 +61,7 @@
         android:paddingRight="5dp"
         android:text="Assinged Route: University Commons"
         android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:textSize="15sp"/>
     
     <TextView
         android:id="@+id/tvCabCapacityLabel"
@@ -152,7 +152,7 @@
         android:paddingRight="5dp"
         android:text="Ensure\n1.Login only 15 Mins before your schedule.\n2.Bluetooth button is connected"
         android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:textSize="20sp" />
     </LinearLayout>
   </ScrollView>
  </LinearLayout>

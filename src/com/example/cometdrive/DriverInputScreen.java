@@ -6,9 +6,12 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -37,6 +40,9 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	DriverDatabaseController dbController;
 	String routeInformation;
 	String CabCapacity;
+	AudioManager am;
+	ComponentName cmp;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -70,6 +76,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
+		am.unregisterMediaButtonEventReceiver(cmp);
 	}
 	
 	@Override
@@ -95,14 +102,17 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	    btnContinue.setText("Login >>");
 	    btnCancel =(Button)findViewById(R.id.btnCancel);
 	    btnCancel.setOnClickListener(this);
-	    
-		btnContinue.setOnClickListener(this);
-		
+	    btnContinue.setOnClickListener(this);
 		tvAssignedRoute.setVisibility(View.GONE);
 		tvCabCapacity.setVisibility(View.GONE);
 		etCabCapacity.setVisibility(View.GONE);
-		
-	    dbController = new DriverDatabaseController(this);
+		dbController = new DriverDatabaseController(this);
+	    
+	    am = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
+        cmp = new ComponentName(getPackageName(),DummyBluetoothButtonReceiver.class.getName());
+        am.registerMediaButtonEventReceiver(cmp);
+       
+        
 	}
 	
 	public void LoadRouteInfo()

@@ -99,7 +99,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		tvCabCapacity =(TextView)findViewById(R.id.tvCabCapacityLabel);
 		etCabCapacity= (EditText)findViewById(R.id.etCabCapacity);
 		btnContinue =(Button)findViewById(R.id.btnContinue);
-	    btnContinue.setText("Login >>");
+	    btnContinue.setText("Login");
 	    btnCancel =(Button)findViewById(R.id.btnCancel);
 	    btnCancel.setOnClickListener(this);
 	    btnContinue.setOnClickListener(this);
@@ -132,7 +132,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 		{
 			case R.id.btnContinue:
 				String driverID = etDriverID.getText().toString();
-				if(btnContinue.getText().equals("Report On Duty >>"))
+				if(btnContinue.getText().equals("Report On Duty"))
 				{
 					CabCapacity = etCabCapacity.getText().toString().trim();
 					if(!CabCapacity.equals(""))
@@ -155,7 +155,7 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 						Toast.makeText(this, "Please enter a Valid Cab Capacity", Toast.LENGTH_SHORT).show();
 					}
 				}
-				else if(btnContinue.getText().equals("Login >>"))
+				else if(btnContinue.getText().equals("Login"))
 				{
 					if(!driverID.equals(""))
 					{
@@ -173,9 +173,9 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 							tvCabCapacity.setVisibility(View.VISIBLE);
 							etCabCapacity.setVisibility(View.VISIBLE);
 							etDriverID.setEnabled(false);
-							btnContinue.setText("Report On Duty >>");
+							btnContinue.setText("Report On Duty");
 							tvAssignedRoute.setText("Assigned Route :"+routeInformation);
-							Toast.makeText(this, "Login Successful !!", Toast.LENGTH_SHORT).show();
+							//Toast.makeText(this, "Login Successful !!", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{

@@ -125,18 +125,19 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		tvTotalCapacity.setText(String.valueOf(pref.getInt("VehicleCapacity", 0)));
 		
 		//###########Initialize GPS Variables to Update Every 5 Seconds##############//
-		Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        //criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-      	String provider = lm.getBestProvider(criteria, true);
-      	lm.requestLocationUpdates(provider,100,0,this);
-      	Location location = lm.getLastKnownLocation(provider);
+		//Criteria criteria = new Criteria();
+        //criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        ////criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        //lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+      	//String provider = lm.getBestProvider(criteria, true);
+      	//lm.requestLocationUpdates(provider,100,0,this);
+      	//Location location = lm.getLastKnownLocation(provider);
       	
-      	Toast.makeText(this,provider, Toast.LENGTH_SHORT).show();
-		//lm = (LocationManager)getSystemService(LOCATION_SERVICE);
-        //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0,this);
-        //location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+      	//Toast.makeText(this,provider, Toast.LENGTH_SHORT).show();
+		lm = (LocationManager)getSystemService(LOCATION_SERVICE);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,100,0,this);
+        location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        
     	if(location!=null)
     	{
     		this.onLocationChanged(location);
@@ -261,11 +262,11 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		        startActivity(in);
 			}			
 		}
-		if(locationUpdateCounter==4)
+		if(locationUpdateCounter==2)
 		{
 			if(prevLoc==null)
 				prevLoc = location;
-			Toast.makeText(this,"Loc", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this,"Loc", Toast.LENGTH_SHORT).show();
 			dbcontroller.UpdateLiveVehicleInformation(pref.getString("RouteID", "0"),pref.getInt("VehicleID",0),prevLoc.getLatitude(),prevLoc.getLongitude(),vehicleLatitude, vehicleLongitude,pref.getInt("VehicleCapacity",0),	pref.getInt("CurrentRiders",0),	pref.getInt("TotalRiders",0));
 			Log.i("Comet","Live Information Table Updated from MainScreen");
 			locationUpdateCounter=0;

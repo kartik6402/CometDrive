@@ -56,7 +56,6 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	protected void onResume(){	
 		super.onResume();
 		Initialize();
-		
 	    //LoadRouteInfo();
 		if(Pref.getString("Close", "FALSE").equals("TRUE"))
 		{
@@ -68,24 +67,23 @@ public class DriverInputScreen extends Activity implements android.view.View.OnC
 	
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
 		super.onRestart();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		am.unregisterMediaButtonEventReceiver(cmp);
 	}
 	
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void Initialize()
 	{
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

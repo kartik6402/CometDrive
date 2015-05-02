@@ -8,8 +8,8 @@
 	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Kar/Downloads/aws-android-sdk-2.1.10/lib/aws-android-sdk-core-2.1.10.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Kar/Downloads/aws-android-sdk-2.1.10/lib/aws-android-sdk-ddb-2.1.10.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Kar/Downloads/aws-android-sdk-2.1.10/lib/aws-android-sdk-ddb-mapper-2.1.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/GitHub_Projects/Android/aws-android-sdk-2.1.10/lib/aws-android-sdk-core-2.1.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/GitHub_Projects/Android/aws-android-sdk-2.1.10/lib/aws-android-sdk-ddb-2.1.10.jar"/>
+	<classpathentry exported="true" kind="lib" path="D:/GitHub_Projects/Android/aws-android-sdk-2.1.10/lib/aws-android-sdk-ddb-mapper-2.1.10.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

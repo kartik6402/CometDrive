@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -91,7 +90,6 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		Log.i("Comet","Destroy");
 	}
@@ -321,7 +319,6 @@ public class DriverUserInterfaceController extends ActionBarActivity implements 
 		@Override
 		protected void onProgressUpdate(Integer... values) 
 		{
-			// TODO Auto-generated method stub
 			txtToday.setText(values[0].toString());	
 			txtCurrent.setText(values[1].toString());
 		}
